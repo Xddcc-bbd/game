@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小朋友的加减法练习</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            text-align: center;
+            background-color: #f0f8ff;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #55aaff;
+            font-size: 2em;
+        }
+        .problem {
+            font-size: 3em;
+            margin: 30px 0;
+            color: #2c3e50;
+        }
+        input {
+            font-size: 1.5em;
+            padding: 10px;
+            width: 100px;
+            text-align: center;
+            border: 3px solid #3498db;
+            border-radius: 10px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 15px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .feedback {
+            margin: 20px 0;
+            min-height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .feedback img {
+            max-width: 500px;
+            max-height: 500px;
+        }
+        .score {
+            font-size: 1.5em;
+            color: #27ae60;
+            margin: 15px 0;
+        }
+        @media (max-width: 500px) {
+            .problem {
+                font-size: 2em;
+            }
+            input {
+                font-size: 1.2em;
+                width: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>10以内加减法练习</h1>
+    <div class="problem" id="problem">3 + 4 = ?</div>
+    <input type="number" id="answer" placeholder="答案">
+    <button onclick="checkAnswer()">提交答案</button>
+    <button onclick="newProblem()">下一题</button>
+    
+    <div class="feedback" id="feedback">
+        <!-- 反馈图片会显示在这里 -->
+    </div>
+    
+    <div class="score">
+        得分: <span id="score">0</span>
+    </div>
+
+    <script>
+        // 存储当前问题的正确答案
+        let correctAnswer;
+        let score = 0;
+        
+        // 正确和错误的图片URL（你可以替换成自己的图片）
+        const correctImages = [
+            "correctpic.jpg",
+			 "correctpic2.png"
+        ];
+        
+        const wrongImages = [
+            "wrongpic.jpg",
+			 "wrongpic2.png"
+        ];
+        
+        // 页面加载时生成第一个问题
+        window.onload = newProblem;
+        
+        // 生成新的加减法问题
+        function newProblem() {
+            document.getElementById('feedback').innerHTML = '';
+            document.getElementById('answer').value = '';
+            
+            const isAddition = Math.random() > 0.5; // 随机选择加法或减法
+            let num1, num2;
+            
+            if (isAddition) {
+                // 加法：确保和不超过10
+                num1 = Math.floor(Math.random() * 9) + 1; // 1-9
+                num2 = Math.floor(Math.random() * (10 - num1)) + 1; // 确保和≤10
+                correctAnswer = num1 + num2;
+                document.getElementById('problem').textContent = `${num1} + ${num2} = ?`;
+            } else {
+                // 减法：确保结果为正数
+                num1 = Math.floor(Math.random() * 9) + 1; // 1-9
+                num2 = Math.floor(Math.random() * num1) + 1; // 确保num2≤num1
+                correctAnswer = num1 - num2;
+                document.getElementById('problem').textContent = `${num1} - ${num2} = ?`;
+            }
+        }
+        
+        // 检查答案
+        function checkAnswer() {
+            const userAnswer = parseInt(document.getElementById('answer').value);
+            const feedbackDiv = document.getElementById('feedback');
+            
+            if (isNaN(userAnswer)) {
+                feedbackDiv.innerHTML = '<p style="color:red;">请输入一个数字哦！</p>';
+                return;
+            }
+            
+            if (userAnswer === correctAnswer) {
+                // 答对了
+                score++;
+                document.getElementById('score').textContent = score;
+                
+                // 随机选择一张正确反馈图片
+                const randomImg = correctImages[Math.floor(Math.random() * correctImages.length)];
+                feedbackDiv.innerHTML = `
+                    <div>
+                        <img src="${randomImg}" alt="正确">
+                        <p style="color:green;">太棒了！答对了！</p>
+                    </div>
+                `;
+            } else {
+                // 答错了
+                const randomImg = wrongImages[Math.floor(Math.random() * wrongImages.length)];
+                feedbackDiv.innerHTML = `
+                    <div>
+                        <img src="${randomImg}" alt="错误">
+                        <p style="color:red;">再试试看！正确答案是 ${correctAnswer}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // 按回车键也可以提交答案
+        document.getElementById('answer').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+    </script>
+</body>
+</html>
